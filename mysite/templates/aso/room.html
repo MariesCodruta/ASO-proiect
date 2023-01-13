@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+html {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	background: #ffe6ff;
+}
+
+body {
+  margin: 0 auto;
+  max-width: 800px;
+  padding: 0 20px;
+}
+
+.container {
+  border-radius: 5px;
+  background-color: white;
+  padding: 20px;
+  margin: 12px;
+}
+
+.darker {
+  background-color: white;
+}
+.time-left {
+  float: left;
+  color: #999;
+}
+</style>
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+</head>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                  <a href="{% url 'home' %}" class="ml-2">Home</a>
+                  <a href="{% url 'logout' %}" class="ml-2">Logout</a>
+          </div>
+    </div>
+  </div>
+<body>
+<h3>{{room}} - {{username}}</h3>
+<div id="display">
+</div>
+
+<script>
+ function typeMessage(){
+       $("#typing").text("Utilizatorul {{username}} scrie")
+  }
+
+$(document).ready(function(){
+setInterval(function(){
+    $.ajax({
+        type: 'GET',
+        url : "/getMessages/{{room}}/",
+        success: function(response){
+            console.log(response);
+            $("#display").empty();
+            for (var key in response.messages)
+            {
+                var temp="<div class='container darker'><b>"+response.messages[key].user+"</b><p>"+response.messages[key].value+"</p><span class='time-left'>"+response.messages[key].date+"</span></div>";
+                $("#display").append(temp);
+            }
+            var message = '<p id = "typing" ></p>'
+            $("#display").append(message);
+
+            $("#message").keyup(function(){
+            $("#typing").text("")
+            })
+        },
+        error: function(response){
+            alert('An error occured')
+        }
+    });
+},1000);
+})
+</script>
+
+<div class="container">
+    <style>
+    input[type=text], select {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    display: inline-block;
+    border;
+    border-radius: 5px;
+    box-sizing: border-box;
+    }
+
+    input[type=submit] {
+    width: 100%;
+    background-color:#ff99ff;
+    color: black;
+	border: none;
+	width: 100px;
+	margin: 20px;
+    border-radius: 5px;
+    }
+
+    input[type=submit]:hover {
+    background-color: #ff99ff;
+    color: black;
+	border: none;
+	width: 100px;
+	margin: 20px;
+    border-radius: 5px;
+    }
+
+    </style>
+    <form id="post-form">
+        {% csrf_token %}
+        <input type="hidden" name="username" id="username" value="{{username}}"/>
+        <input type="hidden" name="room_id" id="room_id" value="{{room_details.id}}"/>
+        <input type="text" name="message" id="message" width="150px" oninput="typeMessage()" />
+        <input type="submit" value="Trimite">
+    </form>
+</div>
+</body>
+<script type="text/javascript">
+  $(document).on('submit','#post-form',function(e){
+    e.preventDefault();
+
+    $.ajax({
+      type:'POST',
+      url:'/send',
+      data:{
+          username:$('#username').val(),
+          room_id:$('#room_id').val(),
+          message:$('#message').val(),
+        csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+      },
+      success: function(data){
+         //alert(data)
+      }
+    });
+    document.getElementById('message').value = ''
+  });
+</script>
+</html>

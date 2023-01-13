@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+html {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	background: #ffe6ff;
+}
+
+body {
+  margin: 0 auto;
+  max-width: 800px;
+  padding: 0 20px;
+}
+
+.darker {
+  border-color: #ccc;
+  background-color: #ddd;
+}
+
+.container::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+</style>
+</head>
+<body>
+ <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="collapse navbar-collapse" id="navbarNav">
+        <span class="hello-msg">Hello, {{request.user}}</span>
+    <ul class="navbar-nav">
+                  <a href="{% url 'logout' %}" class="ml-2">Logout</a>
+    </ul>
+  </div>
+</nav>
+<div class="container">
+    <style>
+    input[type=text], select {
+    width: 90%;
+    padding: 12px;
+    margin: 10px;
+    border-radius : 5px;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    }
+
+    input[type=submit] {
+    width: 100%;
+    background-color: #ff99ff;
+    color: black;
+	border: none;
+	width: 100px;
+	margin: 20px;
+    border-radius: 5px;
+    }
+
+    input[type=submit]:hover {
+    background-color: #ff99ff;
+    color: black;
+	border: none;
+	width: 100px;
+	margin: 20px;
+    border-radius: 5px;
+    }
+
+    </style>
+    <form id="post-form" method="POST" action="checkview">
+        {% csrf_token %}
+        <label>Room Name</label>
+        <input type="text" name="room_name" id="room_name" width="60px" />
+         <label>Username</label>
+        <input type="text" name="username" id="username" width="60px" />
+        <input type="submit" value="Intrati in chat">
+    </form>
+</div>
